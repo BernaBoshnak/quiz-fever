@@ -8,7 +8,7 @@ const editorTemplate = (data, index, onSave, onCancel) => html`
             Save</button>
         <button @click=${onCancel} class="input submit action"><i class="fas fa-times"></i> Cancel</button>
     </div>
-    <h3>Question ${index}</h3>
+    <h3>Question ${index + 1}</h3>
 </div>
 <form>
     <textarea class="input editor-input editor-text" name="text" placeholder="Enter question"
@@ -22,9 +22,10 @@ const viewTemplate = (data, index, onEdit, onDelete) => html`
     <div class="layout">
         <div class="question-control">
             <button @click=${onEdit} class="input submit action"><i class="fas fa-edit"></i> Edit</button>
-            <button @click=${onDelete} class="input submit action"><i class="fas fa-trash-alt"></i> Delete</button>
+            <button @click=${() => onDelete(index)} class="input submit action"><i class="fas fa-trash-alt"></i>
+                Delete</button>
         </div>
-        <h3>Question ${index}</h3>
+        <h3>Question ${index + 1}</h3>
     </div>
     <div>
         <p class="editor-input">${data.text}</p>
@@ -42,22 +43,29 @@ const radioView = (value, checked) => html`
 </div>`;
 {/* <div class="loading-overlay working"></div> */ }
 
-export function createQuestion(question, index) {
+export function createQuestion(question, removeQuestion) {
+    let index = 0;
+    let editorActive = false;
     const element = document.createElement('article');
     element.className = 'editor-question';
 
     showView();
-    return element;
 
-    function onEdit() {
-        showEditor();
+    return update;
+
+    function update(newIndex) {
+        index = newIndex;
+        if (editorActive) {
+            showEditor();
+        } else {
+            showView();
+        }
+        return element;
     }
 
-    async function onDelete() {
-        const confirmed = confirm('Are you sure you want to delete this question?');
-        if (confirmed) {
-            element.remove();
-        }
+    function onEdit() {
+        editorActive = true;
+        showEditor();
     }
 
     async function onSave() {
@@ -68,11 +76,12 @@ export function createQuestion(question, index) {
     }
 
     function onCancel() {
+        editorActive = false;
         showView();
     }
 
     function showView() {
-        render(viewTemplate(question, index, onEdit, onDelete), element);
+        render(viewTemplate(question, index, onEdit, removeQuestion), element);
     }
 
     function showEditor() {
