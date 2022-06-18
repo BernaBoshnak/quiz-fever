@@ -1,6 +1,9 @@
 import { html, render } from '../../lib.js';
 import { createAnswerList } from './answer.js';
 
+import { createOverlay } from '../common/loader.js';
+import { createQuestion as apiCreate, updateQuestion } from '../../api/data.js';
+
 const editorTemplate = (data, index, onSave, onCancel) => html`
 <div class="layout">
     <div class="question-control">
@@ -42,7 +45,7 @@ const radioView = (value, checked) => html`
     <span>${value}</span>
 </div>`;
 
-export function createQuestion(question, removeQuestion) {
+export function createQuestion(quizId, question, removeQuestion) {
     let currentQuestion = copyQuestion(question);
     let index = 0;
     let editorActive = false;
@@ -71,8 +74,44 @@ export function createQuestion(question, removeQuestion) {
     async function onSave() {
         const formData = new FormData(element.querySelector('form'));
 
-        const data = [...formData.entries()].reduce((a, [k, v]) => Object.assign(a, { [k]: v }), {});
-        console.log(data);
+        const data = [...formData.entries()];
+        const answers = data
+            .filter(([k, v]) => k.includes('answer-'))
+            .reduce((a, [k, v]) => {
+                const index = Number(k.split('-')[1]);
+                a[index] = v;
+
+                return a;
+            }, []);
+
+        const body = {
+            text: formData.get('text'),
+            answers,
+            correctIndex: Number(data.find(([k, v]) => k.includes('question-'))[1])
+        };
+
+        const loader = createOverlay();
+        try {
+            element.appendChild(loader);
+
+            if (question.objectId) {
+                //update
+                await updateQuestion(question.objectId, body);
+            } else {
+                //create
+                const result = await apiCreate(quizId, body);
+                question.objectId = result.objectId;
+            }
+
+            Object.assign(question, body);
+            currentQuestion = copyQuestion(question);
+            editorActive = false;
+            update(index);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            loader.remove();
+        }
     }
 
     function onCancel() {
