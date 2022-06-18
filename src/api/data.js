@@ -49,11 +49,11 @@ export async function deleteQuiz(id) {
 
 export async function getQuestionsByQuizId(quizId) {
     const query = JSON.stringify({ quiz: createPointer('Quiz', quizId) });
-    const reponse = await api.get(host + '/classes/Question?where=' + encodeURIComponent(query));
-    return reponse.results;
+    const response = await api.get(host + '/classes/Question?where=' + encodeURIComponent(query));
+    return response.results;
 }
 
-export async function creareQuestion(quizId, question) {
+export async function createQuestion(quizId, question) {
     const body = addOwner(question);
     body.quiz = createPointer('Quiz', quizId);
     return await api.post(host + '/classes/Question', body);
