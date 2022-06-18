@@ -1,14 +1,13 @@
-import * as api from './api/data.js';
-window.api = api;
-
 import { page, render } from './lib.js';
 
+import { logout as apiLogout } from './api/data.js';
 import { editorPage } from './views/editor/editor.js';
 import { browsePage } from './views/browse.js';
 import { loginPage, registerPage } from './views/auth.js';
 
 const main = document.getElementById('content');
 setUserNav();
+document.getElementById('logoutBtn').addEventListener('click', logout);
 
 page('/browse', decorateContext, browsePage);
 page('/login', decorateContext, loginPage);
@@ -33,4 +32,10 @@ function setUserNav() {
         document.getElementById('user-nav').style.display = 'none';
         document.getElementById('guest-nav').style.display = 'block';
     }
+}
+
+async function logout() {
+    await apiLogout();
+    setUserNav();
+    page.redirect('/');
 }
