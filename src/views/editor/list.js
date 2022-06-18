@@ -1,6 +1,8 @@
 import { html, render } from '../../lib.js';
 import { createQuestion } from './question.js';
 
+import { deleteQuestion } from '../../api/data.js';
+
 const questionList = (questions, addQuestion) => html`
 <header class="pad-large">
     <h2>Questions</h2>
@@ -31,7 +33,7 @@ export function createList(quizId, questions) {
             text: '',
             answers: [],
             correctIndex: 0
-        }, removeQuestion));
+        }, removeQuestion, true));
         update();
     }
 
@@ -39,9 +41,12 @@ export function createList(quizId, questions) {
         render(questionList(currentQuestions.map((c, i) => c(i)), addQuestion), element);
     }
 
-    function removeQuestion(index) {
+    async function removeQuestion(index, id) {
         const confirmed = confirm('Are you sure you want to delete this question?');
         if (confirmed) {
+            if (id) {
+                await deleteQuestion(id);
+            }
             currentQuestions.splice(index, 1);
             update();
         }
