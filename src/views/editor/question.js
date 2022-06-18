@@ -25,7 +25,7 @@ const viewTemplate = (data, index, onEdit, onDelete) => html`
     <div class="layout">
         <div class="question-control">
             <button @click=${onEdit} class="input submit action"><i class="fas fa-edit"></i> Edit</button>
-            <button @click=${() => onDelete(index)} class="input submit action"><i class="fas fa-trash-alt"></i>
+            <button @click=${()=> onDelete(index)} class="input submit action"><i class="fas fa-trash-alt"></i>
                 Delete</button>
         </div>
         <h3>Question ${index + 1}</h3>
@@ -45,7 +45,7 @@ const radioView = (value, checked) => html`
     <span>${value}</span>
 </div>`;
 
-export function createQuestion(quizId, question, removeQuestion, edit) {
+export function createQuestion(quizId, question, removeQuestion, updateCount, edit) {
     let currentQuestion = copyQuestion(question);
     let index = 0;
     let editorActive = edit || false;
@@ -100,6 +100,7 @@ export function createQuestion(quizId, question, removeQuestion, edit) {
             } else {
                 //create
                 const result = await apiCreate(quizId, body);
+                updateCount();
                 question.objectId = result.objectId;
             }
 

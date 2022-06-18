@@ -2,7 +2,7 @@ import { html, render } from '../../lib.js';
 import { createList } from './list.js';
 import { createQuiz, updateQuiz, getQuizById, getQuestionsByQuizId } from '../../api/data.js';
 
-const template = (quiz, quizEditor) => html`
+const template = (quiz, quizEditor, updateCount) => html`
 <section id="editor">
 
     <header class="pad-large">
@@ -12,7 +12,7 @@ const template = (quiz, quizEditor) => html`
     ${quizEditor}
 
 
-    ${quiz ? createList(quiz.objectId, quiz.questions) : ''}
+    ${quiz ? createList(quiz.objectId, quiz.questions, updateCount) : ''}
 
 </section>`;
 
@@ -71,7 +71,13 @@ export async function editorPage(ctx) {
 
     const { editor, updateEditor } = createQuizEditor(quiz, onSave);
 
-    ctx.render(template(quiz, editor));
+    ctx.render(template(quiz, editor, updateCount));
+
+    async function updateCount(change = 0) {
+        const count = questions.length + change;
+
+        await updateQuiz(quizId, { questionCount: count });
+    }
 
     async function onSave(e) {
         e.preventDefault();

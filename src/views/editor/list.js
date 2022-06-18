@@ -18,8 +18,8 @@ ${questions}
     </div>
 </article>`;
 
-export function createList(quizId, questions) {
-    const currentQuestions = questions.map(q => createQuestion(quizId, q, removeQuestion));
+export function createList(quizId, questions, updateCount) {
+    const currentQuestions = questions.map(q => createQuestion(quizId, q, removeQuestion, updateCount));
 
     const element = document.createElement('div');
     element.className = 'pad-large alt-page';
@@ -29,11 +29,17 @@ export function createList(quizId, questions) {
 
 
     function addQuestion() {
+        questions.push({
+            text: '',
+            answers: [],
+            correctIndex: 0
+        });
+
         currentQuestions.push(createQuestion(quizId, {
             text: '',
             answers: [],
             correctIndex: 0
-        }, removeQuestion, true));
+        }, removeQuestion, updateCount, true));
         update();
     }
 
@@ -46,7 +52,10 @@ export function createList(quizId, questions) {
         if (confirmed) {
             if (id) {
                 await deleteQuestion(id);
+                updateCount(-1);
             }
+
+            questions.splice(index, 1);
             currentQuestions.splice(index, 1);
             update();
         }

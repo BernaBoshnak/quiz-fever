@@ -4,9 +4,11 @@ window.api = api;
 import { page, render } from './lib.js';
 
 import { editorPage } from './views/editor/editor.js';
+import { browsePage } from './views/browse.js';
 
 const main = document.getElementById('content');
 
+page('/browse', decorateContext, browsePage);
 page('/create', decorateContext, editorPage);
 page('/edit/:id', decorateContext, editorPage);
 
