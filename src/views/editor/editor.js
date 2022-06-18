@@ -1,4 +1,4 @@
-import { html, render } from '../../lib.js';
+import { topics, html, render } from '../../lib.js';
 import { createList } from './list.js';
 import { createQuiz, updateQuiz, getQuizById, getQuestionsByQuizId } from '../../api/data.js';
 
@@ -25,10 +25,9 @@ const quizEditorTemplate = (quiz, onSave, working) => html`
     <label class="editor-label layout">
         <span class="label-col">Topic:</span>
         <select class="input i-med" name="topic" .value=${quiz ? quiz.topic : '0'} ?disabled=${working}>
-            <option value="0"><span class="quiz-meta">-- Select Categories</span></option>
-            <option value="it">Languages</option>
-            <option value="hardware">Hardware</option>
-            <option value="software">Tools and Software</option>
+            <option value="0">-- Select Categories</option>
+
+            ${Object.entries(topics).map(([k, v]) => html`<option value=${k} ?selected=${quiz.topic == k}>${v}</option>`)}
         </select>
     </label>
     <label class="editor-label layout">
@@ -64,7 +63,7 @@ export async function editorPage(ctx) {
     if (quizId) {
         [quiz, questions] = await Promise.all([
             getQuizById(quizId),
-            getQuestionsByQuizId(quizId)
+            getQuestionsByQuizId(quizId, sessionStorage.getItem('userId'))
         ]);
         quiz.questions = questions;
     }

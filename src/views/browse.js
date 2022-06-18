@@ -1,4 +1,4 @@
-import { html, until } from '../lib.js';
+import { topics, html, until } from '../lib.js';
 
 import { getQuizes } from '../api/data.js';
 import { cube } from './common/loader.js';
@@ -9,10 +9,7 @@ const template = () => html`
         <form class="browse-filter">
             <input class="input" type="text" name="query">
             <select class="input" name="topic">
-                <option value="all">All Categories</option>
-                <option value="it">Languages</option>
-                <option value="hardware">Hardware</option>
-                <option value="software">Tools and Software</option>
+                ${Object.entries(topics).map(([k, v]) => html`<option value=${k}>${v}</option>`)}
             </select>
             <input class="input submit action" type="submit" value="Filter Quizes">
         </form>
