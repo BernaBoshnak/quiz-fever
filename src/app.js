@@ -28,7 +28,8 @@ async function getQuiz(ctx, next) {
         ctx.render(cube());
         cache[quizId] = await getQuizById(quizId);
         const ownerId = cache[quizId].owner.objectId;
-        cache[quizId].questions = await getQuestionsByQuizId(quizId, ownerId)
+        cache[quizId].questions = await getQuestionsByQuizId(quizId, ownerId);
+        cache[quizId].answers = cache[quizId].questions.map(q => undefined);
     }
 
     ctx.quiz = cache[quizId];

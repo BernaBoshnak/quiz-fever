@@ -1,13 +1,12 @@
-import { html } from '../../lib.js';
+import { classMap, html, styleMap } from '../../lib.js';
 
-const quizTemplate = (quiz, questions, currentIndex) => html`
+const quizTemplate = (quiz, questions, answers, currentIndex, onSelect) => html`
 <section id="quiz">
     <header class="pad-large">
         <h1>${quiz.title}: Question ${currentIndex + 1} / ${questions.length}</h1>
         <nav class="layout q-control">
             <span class="block">Question index</span>
-            ${questions.map((q, i) => html`<a class="q-index q-current q-answered"
-                href="/quiz/${quiz.objectId}?question=${i + 1}"></a>`)}
+            ${questions.map((q,i) => indexTemplate(quiz.objectId, i, i == currentIndex, answers[i] != undefined))}
         </nav>
     </header>
     <div class="pad-large alt-page">
@@ -17,17 +16,23 @@ const quizTemplate = (quiz, questions, currentIndex) => html`
                 ${questions[currentIndex].text}
             </p>
 
-            <form>
+            <form @change=${onSelect}>
                 ${questions.map((q, i) => questionTemplate(q, i, i == currentIndex))}
             </form>
 
             <nav class="q-control">
-                <span class="block">12 questions remaining</span>
-                <a class="action" href=#><i class="fas fa-arrow-left"></i> Previous</a>
-                <a class="action" href=#><i class="fas fa-sync-alt"></i> Start over</a>
+                <span class="block">${answers.filter(a => a == undefined).length} questions remaining</span>
+                ${currentIndex > 0 ? html`<a class="action" href="/quiz/${quiz.objectId}?question=${currentIndex}">
+                <i class="fas fa-arrow-left"></i>
+                 Previous</a>` : ''}
+                 
+                <a class="action" href="#"><i class="fas fa-sync-alt"></i> Start over</a>
                 <div class="right-col">
-                    <a class="action" href=#>Next <i class="fas fa-arrow-right"></i></a>
-                    <a class="action" href=#>Submit answers</a>
+                    ${currentIndex < questions.length -1 ? html`<a class="action" href="/quiz/${quiz.objectId}?question=${currentIndex + 2}">
+                    Next 
+                    <i class="fas fa-arrow-right"></i></a>` : ''}
+
+                    <a class="action" href="#">Submit answers</a>
                 </div>
             </nav>
         </article>
@@ -35,8 +40,17 @@ const quizTemplate = (quiz, questions, currentIndex) => html`
     </div>
 </section>`;
 
+const indexTemplate = (quizId, i, isCurrent, isAnswered) => {
+    const className = {
+        'q-index': true,
+        'q-current': isCurrent,
+        'q-answered': isAnswered
+    }
+    return html`<a class=${classMap(className)} href="/quiz/${quizId}?question=${i + 1}"></a>`
+};
+
 const questionTemplate = (question, index, isCurrent) => html`
-<div data-index="question ${index}" style=${isCurrent ? '': 'display:none'}>
+<div data-index="question ${index}" style=${styleMap({display : isCurrent ? '': 'none'})}>
 
     ${question.answers.map((a, i) => answerTemplate(index, i, a))}
 
@@ -53,5 +67,19 @@ const answerTemplate = (questionIndex, index, text) => html`
 export async function quizPage(ctx) {
     const index = Number(ctx.querystring.split('=')[1] || 1) -1;
     const questions = ctx.quiz.questions;
-    ctx.render(quizTemplate(ctx.quiz, questions, index));
+    const answers = ctx.quiz.answers;
+    update();
+    
+    function onSelect(e) {
+        const questionIndex = Number(e.target.name.split('-')[1]);
+        if(Number.isNaN(questionIndex) != true) {
+            const answer = Number(e.target.value);
+            answers[questionIndex] = answer;
+            update();
+        }
+    }
+    
+    function update() {
+        ctx.render(quizTemplate(ctx.quiz, questions, answers, index, onSelect));
+    }
 }
