@@ -8,13 +8,13 @@ import { quizTemplate } from './views/common/quiz-preview.js';
 const template = () => html`
 <section id="browse">
     <header class="pad-large">
-        <form class="browse-filter">
+        <!-- <form class="browse-filter">
             <input class="input" type="text" name="query">
             <select class="input" name="topic">
                 ${Object.entries(topics).map(([k, v]) => html`<option value=${k}>${v}</option>`)}
             </select>
             <input class="input submit action" type="submit" value="Filter Quizes">
-        </form>
+        </form> -->
         <h1>All quizes</h1>
     </header>
 

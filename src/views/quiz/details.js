@@ -12,7 +12,7 @@ const detailsTemplate = (quiz) => html`
             <span class="quiz-topic">A quiz by <a href="/users/${quiz.owner.objectId}">${quiz.owner.username}</a> on the
                 topic of <strong>${topics[quiz.topic]}</strong></span>
 
-            ${until(loadCount(), line())}
+            ${until(loadCount(quiz), line())}
 
             <p class="quiz-desc">${quiz.description}</p>
 
