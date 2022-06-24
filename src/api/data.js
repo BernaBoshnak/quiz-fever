@@ -26,9 +26,9 @@ function addOwner(object) {
 
 export async function getQuizes() {
     const quizes = (await api.get(host + '/classes/Quiz')).results;
-    const token = await getSolutionCount(quizes.map(q => q.objectId));
+    const taken = await getSolutionCount(quizes.map(q => q.objectId));
 
-    quizes.forEach(q => q.token = token[q.objectId]);
+    quizes.forEach(q => q.taken = taken[q.objectId]);
     return quizes;
 }
 
