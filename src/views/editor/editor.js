@@ -1,4 +1,6 @@
-import { topics, html, render } from '../../lib.js';
+import { html, render } from '../../lib.js';
+import { topics } from '../../util.js';
+
 import { createList } from './list.js';
 import { createQuiz, updateQuiz, getQuizById, getQuestionsByQuizId } from '../../api/data.js';
 
@@ -20,19 +22,19 @@ const quizEditorTemplate = (quiz, onSave, working) => html`
 <form @submit=${onSave}>
     <label class="editor-label layout">
         <span class="label-col">Title:</span>
-        <input class="input i-med" type="text" name="title" .value=${quiz ? quiz.title : ''} ?disabled=${working}>
+        <input class="input i-med" type="text" name="title" .value=${quiz ? quiz.title : '' } ?disabled=${working}>
     </label>
     <label class="editor-label layout">
         <span class="label-col">Topic:</span>
-        <select class="input i-med" name="topic" .value=${quiz ? quiz.topic : '0'} ?disabled=${working}>
+        <select class="input i-med" name="topic" .value=${quiz ? quiz.topic : '0' } ?disabled=${working}>
             <option value="0">-- Select Categories</option>
 
-            ${Object.entries(topics).map(([k, v]) => html`<option value=${k} ?selected=${quiz.topic == k}>${v}</option>`)}
+            ${Object.entries(topics).map(([k, v]) => html`<option value=${k} ?selected=${quiz.topic==k}>${v}</option>`)}
         </select>
     </label>
     <label class="editor-label layout">
         <span class="label-col">Description:</span>
-        <textarea class="input" name="description" .value=${quiz ? quiz.description : ''}
+        <textarea class="input" name="description" .value=${quiz ? quiz.description : '' }
             ?disabled=${working}></textarea>
     </label>
     <input class="input submit action" type="submit" value="Save">

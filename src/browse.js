@@ -1,4 +1,5 @@
-import { topics, html, until } from './lib.js';
+import { html, until } from './lib.js';
+import { topics } from './util.js';
 
 import { getQuizes } from './api/data.js';
 import { cube } from './views/common/loader.js';

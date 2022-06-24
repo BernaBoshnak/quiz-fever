@@ -5,20 +5,12 @@ import { cache } from '//unpkg.com/lit-html/directives/cache?module';
 import { classMap } from '//unpkg.com/lit-html/directives/class-map?module';
 import { styleMap } from '//unpkg.com/lit-html/directives/style-map?module';
 
-const topics = {
-    it: 'Information Technology',
-    languages: 'Languages',
-    hardware: 'Hardware',
-    software: 'Tools and Software',
-    framework: 'Framework'
-};
 
 export {
     page,
     html,
     render,
     until,
-    topics,
     cache,
     classMap,
     styleMap

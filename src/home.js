@@ -1,4 +1,6 @@
-import { topics, html, until } from './lib.js';
+import { html, until } from './lib.js';
+import { topics } from './util.js';
+
 import { cube, line } from './views/common/loader.js';
 import { getMostRecent, getStats } from './api/data.js';
 import { quizTemplate } from './views/common/quiz-preview.js';

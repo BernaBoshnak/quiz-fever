@@ -1,16 +1,18 @@
-import { until, html, topics } from '../../lib.js';
+import { until, html } from '../../lib.js';
+import { topics } from '../../util.js';
 
 import { getSolutionCount } from '../../api/data.js';
-import {line} from '../common/loader.js';
+import { line } from '../common/loader.js';
 
 const detailsTemplate = (quiz) => html`
 <section id="details">
     <div class="pad-large alt-page">
         <article class="details">
             <h1>${quiz.title}</h1>
-            <span class="quiz-topic">A quiz by <a href="/users/${quiz.owner.objectId}">${quiz.owner.username}</a> on the topic of <strong>${topics[quiz.topic]}</strong></span>
-            
-                ${until(loadCount(), line())}
+            <span class="quiz-topic">A quiz by <a href="/users/${quiz.owner.objectId}">${quiz.owner.username}</a> on the
+                topic of <strong>${topics[quiz.topic]}</strong></span>
+
+            ${until(loadCount(), line())}
 
             <p class="quiz-desc">${quiz.description}</p>
 
