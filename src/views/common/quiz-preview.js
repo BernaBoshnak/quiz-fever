@@ -1,5 +1,4 @@
-import { html } from '../../../node_modules/lit-html/lit-html.js';
-import { topics } from '../../lib.js';
+import { html, topics } from '../../lib.js';
 
 export const quizTemplate = (quiz) => html`
 <article class="preview layout">
